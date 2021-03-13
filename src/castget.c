@@ -36,7 +36,7 @@
 #include <taglib/tag_c.h>
 #endif /* HAVE_TAGLIB */
 
-enum op { OP_UPDATE, OP_CATCHUP, OP_LIST };
+enum op { OP_UPDATE, OP_CATCHUP, OP_LIST, OP_CHANNELS };
 
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
                             const char *identifier, enum op op,
@@ -62,6 +62,7 @@ static gboolean show_debug_info = FALSE;
 static gboolean new_only = FALSE;
 static gboolean list = FALSE;
 static gboolean catchup = FALSE;
+static gboolean list_channels = FALSE;
 static gchar *rcfile = NULL;
 static gchar *filter_regex = NULL;
 
@@ -83,6 +84,8 @@ int main(int argc, char **argv)
       "catch up with channels and exit" },
     { "list", 'l', 0, G_OPTION_ARG_NONE, &list,
       "list available enclosures that have not yet been downloaded and exit" },
+    { "list-channels", 'L', 0, G_OPTION_ARG_NONE, &list_channels,
+      "list channels and exit" },
     { "version", 'V', 0, G_OPTION_ARG_NONE, &show_version,
       "print version and exit" },
 
@@ -142,6 +145,9 @@ int main(int argc, char **argv)
 
   if (list)
     op = OP_LIST;
+
+  if (list_channels)
+    op = OP_CHANNELS;
 
   if (filter_regex) {
     filter = enclosure_filter_new(filter_regex, FALSE);
@@ -428,6 +434,10 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
   case OP_LIST:
     channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 0,
                    filter, debug, show_progress_bar);
+    break;
+
+  case OP_CHANNELS:
+    g_printf("%s\n", identifier);
     break;
   }
 
