@@ -1,0 +1,43 @@
+#compdef castget
+
+autoload -U is-at-least
+
+_castget() {
+  typeset -A opt_args
+  typeset -a _arguments_options
+  local ret=1
+
+  if is-at-least 5.2; then
+    _arguments_options=(-s -S -C)
+  else
+    _arguments_options=(-s -C)
+  fi
+
+  local context curcontext="$curcontext" state line
+  _arguments "${_arguments_options[@]}" \
+    {-c,--catchup}'[catch up with channels and exit]' \
+    {-l,--list}'[list available enclosures that have not yet been downloaded and exit]' \
+    {-V,--version}'[print version and exit]' \
+    {-r,--resume}'[resume aborted downloads]' \
+    {-C,--rcfile}'[override the default configuration file name]' \
+    {-d,--debug}'[print connection debug information]' \
+    '*'{-v,--verbose}'[print detailed progress information]' \
+    {-p,--progress-bar}'[print progress bar]' \
+    {-n,--new-only}'[only process new channels]' \
+    {-q,--quiet}'[only print error messages]' \
+    {-1,--first-only}'[only process the most recent item from each channel]' \
+    {-f,--filter}'[only process items whose enclosure names match a regular expression]' \
+    {-h,--help}'[Show help options]' \
+    && ret=0
+    
+}
+
+(( $+functions[_castget_commands] )) ||
+_castget_commands() {
+    local commands; commands=(
+        
+    )
+    _describe -t commands 'castget commands' commands "$@"
+}
+
+_castget "$@"

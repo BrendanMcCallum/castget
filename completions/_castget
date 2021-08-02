@@ -1,0 +1,38 @@
+#compdef castget
+
+_castget() {
+  local curcontext="$curcontext" ret=1
+  local -a state line channels
+
+  channels=($(castget -L))
+
+  _arguments -C -s -S -n \
+    '*:cmd:->cmds' \
+    '(- 1 *)'{-c,--catchup}'[catch up with channels and exit]' \
+    '(- 1 *)'{-l,--list}'[list available enclosures that have not yet been downloaded and exit]' \
+    '(- 1 *)'{-L,--list-channels}'[list channels and exit]' \
+    '(- 1 *)'{-V,--version}'[print version and exit]' \
+    '(- 1 *)'{-r,--resume}'[resume aborted downloads]' \
+    '(- 1 *)'{-C,--rcfile}'[override the default configuration file name]:file:_files' \
+    '(- 1 *)'{-d,--debug}'[print connection debug information]' \
+    '(- 1 *)'{-v,--verbose}'[print detailed progress information]' \
+    '(- 1 *)'{-p,--progress-bar}'[print progress bar]' \
+    '(- 1 *)'{-n,--new-only}'[only process new channels]' \
+    '(- 1 *)'{-q,--quiet}'[only print error messages]' \
+    '(- 1 *)'{-1,--first-only}'[only process the most recent item from each channel]' \
+    '(- 1 *)'{-f,--filter}'[only process items whose enclosure names match a regular expression]' \
+    '(- 1 *)'{-h,--help}'[Show help options]' \
+    && ret=0
+
+  case "$state" in
+    (cmds)
+      _describe -t commands 'Channels' channels
+    ;;
+    (*)
+    ;;
+  esac
+
+  return ret
+}
+
+_castget

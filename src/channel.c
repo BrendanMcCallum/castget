@@ -30,6 +30,7 @@
 #include "utils.h"
 
 #include <glib/gprintf.h>
+#include <glib/gstdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -204,7 +205,10 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   /* Check that the spool directory exists. */
   if (!g_file_test(c->spool_directory, G_FILE_TEST_IS_DIR)) {
     g_fprintf(stderr, "Spool directory %s not found.\n", c->spool_directory);
-    return 1;
+    if (g_mkdir(c->spool_directory, 0755) != 0) {
+      perror("Error creating channel directory");
+      return 1;
+    }
   }
 
   /* Build enclosure filename. */
